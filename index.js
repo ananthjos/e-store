@@ -14,9 +14,11 @@ app.use("/api/admin", admin);
 app.use("/api/customer", customer);
 app.use("/api/product", product);
 
-app.get("/", (req, res) => {
-  res.send("welcome");
-});
+if (process.env.NODE_ENV == "production") {
+  app.get("*", (req, res) => {
+    res.send("welcome");
+  });
+}
 
 const PORT = process.env.PORT || 5000;
 
