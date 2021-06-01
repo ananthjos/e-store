@@ -150,7 +150,6 @@ router.get("/", auth, async (req, res) => {
   try {
     const customer = await Customer.findById(req.customer).select("-password");
     let pastorders = await Pastorders.find({ customer: req.customer });
-    console.log(pastorders);
     res.status(200).json({ customer });
   } catch (error) {
     res.status(500).json({ error: error.message });
