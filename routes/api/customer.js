@@ -1,4 +1,5 @@
 const express = require("express");
+const crypto = require("crypto");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const { body, validationResult } = require("express-validator");
@@ -9,6 +10,7 @@ const config = require("config");
 const auth = require("../../middleware/Auth");
 const { find } = require("../../models/Customer");
 const router = express.Router();
+const sendEmail = require("../sendEmail");
 
 // customer register
 router.post(
@@ -193,6 +195,80 @@ router.get("/orders-history", auth, async (req, res) => {
     res.status(200).json(customer[0].orders);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// forgot password
+router.post("/forgot", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const customer = await Customer.findOne({ email });
+    if (!customer) {
+      return res.status(401).json({ msg: "User does not exist" });
+    }
+    // generate token
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    // hash token
+    customer.resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    customer.tokenExpiry = Date.now() + 600 * 1000;
+    // save customer to db
+    await customer.save();
+
+    // const resetLink = `http://pensive-goldwasser-db8ef8.netlify.app/${resetToken}`;
+    const resetLink = `${req.protocol}://${req.get(
+      "host"
+    )}/api/customer/resetPassword/${resetToken}`;
+    sendEmail({ email, resetLink });
+
+    res
+      .status(200)
+      .json({ msg: "Resetlink sent to your registered email address" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// resetPassword
+router.put("/resetPassword/:resetToken", async (req, res) => {
+  try {
+    let hashedToken = crypto
+      .createHash("sha256")
+      .update(req.params.resetToken)
+      .digest("hex");
+    const customer = await Customer.findOne({
+      resetPasswordToken: hashedToken,
+      tokenExpiry: { $gt: Date.now() },
+    });
+    if (!customer) {
+      return res.status(401).json({ msg: "Inavlid Link" });
+    }
+
+    if (req.body.password) {
+      // password encryption
+      const salt = await bcrypt.genSalt(10);
+      customer.password = await bcrypt.hash(req.body.password, salt);
+      await customer.save();
+      res.status(200).json({ msg: "Password changed successfully" });
+    } else {
+      res.status(401).json({ msg: "Please enter password" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+    // delete customer resetToken
+    let hashedToken = crypto
+      .createHash("sha256")
+      .update(req.params.resetToken)
+      .digest("hex");
+    await Customer.findOneAndUpdate(
+      { resetPasswordToken: hashedToken },
+      {
+        resetPasswordToken: undefined,
+        tokenExpiry: undefined,
+      }
+    );
   }
 });
 

@@ -36,6 +36,8 @@ const CustomerSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  resetPasswordToken: String,
+  tokenExpiry: Date,
 });
 
 module.exports = Customer = mongoose.model("customers", CustomerSchema);
