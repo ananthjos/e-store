@@ -217,10 +217,11 @@ router.post("/forgot", async (req, res) => {
     // save customer to db
     await customer.save();
 
-    // const resetLink = `http://pensive-goldwasser-db8ef8.netlify.app/${resetToken}`;
-    const resetLink = `${req.protocol}://${req.get(
-      "host"
-    )}/api/customer/resetPassword/${resetToken}`;
+    const resetLink = `http://pensive-goldwasser-db8ef8.netlify.app/resetpassword/${resetToken}`;
+    // const resetLink = `${req.protocol}://${req.get(
+    //   "host"
+    // )}/api/customer/resetPassword/${resetToken}`;
+    // const resetLink = `http://localhost:3000/resetpassword/${resetToken}`;
     sendEmail({ email, resetLink });
 
     res

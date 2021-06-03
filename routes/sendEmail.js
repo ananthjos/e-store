@@ -1,3 +1,4 @@
+require("dotenv").config();
 const nodemailer = require("nodemailer");
 
 const sendEmail = async (options) => {
@@ -5,14 +6,27 @@ const sendEmail = async (options) => {
     host: "smtp.ethereal.email",
     port: 587,
     auth: {
-      user: "dallin.bergstrom91@ethereal.email",
-      pass: "1EuAzmbc3gKTtS6tMd",
+      user: "evie.hettinger@ethereal.email ",
+      pass: "SAE19w3KFD7Vp4jzM7",
     },
   });
 
+  // let transporter = nodemailer.createTransport({
+  //   host: "smtp.gmail.com",
+  //   port: 587,
+  //   secure: false,
+  //   auth: {
+  //     // user: 'ananthp0508@gmail.com',
+  //     // pass: 'pappa#$508',
+  //   },
+  //   tls: {
+  //     rejectUnauthorized: false,
+  //   },
+  // });
+
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"Ananth Joshi" <ananthp0508@gmail.com>', // sender address
+    from: "'ananth joshi'<ananthp0508@gmail.com>", // sender address
     to: options.email, // list of receivers
     subject: "Reset password", // Subject line
     html: `<p>Please reset your password  <a href=${options.resetLink}>from this link.</a> </p>`, // html body
