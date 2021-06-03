@@ -9,7 +9,7 @@ const app = express();
 // connect db
 connectDB();
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin:'*'}));
  // origin: "http://pensive-goldwasser-db8ef8.netlify.app"
 app.use("/api/admin", admin);
 app.use("/api/customer", customer);
