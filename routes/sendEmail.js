@@ -11,19 +11,6 @@ const sendEmail = async (options) => {
     },
   });
 
-  // let transporter = nodemailer.createTransport({
-  //   host: "smtp.gmail.com",
-  //   port: 587,
-  //   secure: false,
-  //   auth: {
-  //     user: 'ananthp0508@gmail.com',
-  //     pass: 'pappa#$508',
-  //   },
-  //   tls: {
-  //     rejectUnauthorized: false,
-  //   },
-  // });
-
   // send mail with defined transport object
   let info = await transporter.sendMail({
     from: "'ananth joshi'<ananthp0508@gmail.com>", // sender address
