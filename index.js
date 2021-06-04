@@ -9,7 +9,7 @@ const app = express();
 // connect db
 connectDB();
 app.use(express.json());
-app.use(cors({ origin: "https://pensive-goldwasser-db8ef8.netlify.app" }));
+app.use(cors({ origin: "https://ananth-e-store.netlify.app" }));
 app.use("/api/admin", admin);
 app.use("/api/customer", customer);
 app.use("/api/product", product);
