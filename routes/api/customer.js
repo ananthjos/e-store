@@ -217,11 +217,7 @@ router.post("/forgot", async (req, res) => {
     // save customer to db
     await customer.save();
 
-    const resetLink = `https://ananth-e-store.netlify.app//resetpassword/${resetToken}`;
-    // const resetLink = `${req.protocol}://${req.get(
-    //   "host"
-    // )}/api/customer/resetPassword/${resetToken}`;
-    // const resetLink = `http://localhost:3000/resetpassword/${resetToken}`;
+    const resetLink = `https://ananth-e-store.netlify.app/resetpassword/${resetToken}`;
     sendEmail({ email, resetLink });
 
     res
